@@ -100,7 +100,8 @@ int main() {
     out = sentinel;
     check(!Q.successor(5, out) && same(out, sentinel), "successor(5) is strict -> none");
     check(!Q.successor(std::numeric_limits<Time>::max(), out), "successor(INT64_MAX) -> none");
-    check(Q.successor(std::numeric_limits<Time>::min(), out) && out.data == 300, "successor(INT64_MIN) -> min");
+    check(Q.successor(std::numeric_limits<Time>::min(), out) && out.data == 300,
+          "successor(INT64_MIN) -> min (no event at INT64_MIN here)");
 
     // cancel semantics
     check(!Q.cancel(Handle{5, 99}), "never-issued seq -> false");
@@ -119,6 +120,9 @@ int main() {
     // past insertions are allowed for the general queue
     Q.insert(-10, 0, 1);
     check(Q.peek_min(out) && out.key.time == -10, "insert in the past allowed");
+    Q.insert(std::numeric_limits<Time>::min(), 0, 7);
+    check(Q.successor(std::numeric_limits<Time>::min(), out) && out.key.time == -10,
+          "successor(INT64_MIN) skips an event AT INT64_MIN (strictly greater)");
 
     // rng: reproducible, in range, unbiased mapping helper behaves at the edges
     Rng r1(42), r2(42);

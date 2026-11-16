@@ -62,7 +62,7 @@ Vector growth makes some single inserts linear; this is amortised separately.
 | `cancel` with a value exactly equal to a pending key | `true` — handles are values, not secrets |
 | many events at one time | returned in increasing seq |
 | `successor(t)` with an event at exactly time t | that event is not returned (strictly greater) |
-| `successor(INT64_MAX)` / `successor(INT64_MIN)` | `false` / the minimum event (if any) |
+| `successor(INT64_MAX)` / `successor(INT64_MIN)` | `false` / the minimum event with time > INT64_MIN, if any (an event AT INT64_MIN is never returned — the rule is strict) |
 | insert with a time earlier than events already popped | allowed (general priority queue); only the simulator forbids it |
 | `size()` after cancels | counts pending events only |
 | handle from a different queue object | unsupported (identical key values can exist in two queues) |
@@ -144,7 +144,24 @@ failed · 4 resource, time-overflow or sequence exhaustion.
 
 ## 9. Ownership
 
-`include/`, `app/`, `scripts/`, `Makefile`, `README.md`, this file: Architect.
-`src/structA/`: Structure A owner. `src/structB/`: Structure B owner. `oracle/`: Oracle owner.
-`adversary/`: Adversary. `bench/`, `results/`, `docs/MODEL_D6.md`: Analyst.
+`include/`, `app/`, `Makefile`, `README.md`, this file, `scripts/{run_tests,check_identical,demo}.sh`,
+`tests/{interface_contract_test,test_opstream,test_sim}.cpp`: Architect.
+`src/structA/`, `tests/test_structA.cpp`: Structure A owner.
+`src/structB/`, `tests/test_structB.cpp`: Structure B owner.
+`oracle/`, `tests/{test_oracle,test_checkers_mutations,test_fullscale}.cpp`: Oracle owner.
+`adversary/`, `scripts/run_suites.sh`: Adversary.
+`bench/`, `results/`, `scripts/{run_bench,profile}.sh`, `docs/MODEL_D6.md`: Analyst.
 `docs/derivations/Dk.pdf`: the owner of derivation k.
+
+## 10. Experimental modes (not part of the contract)
+
+**Operation counters.** `counters()` (event_queue.h) holds comparisons, moves, rotations_single,
+rotations_double, purges, purged_entries, hash_probes and hash_rehash_probes (slots inspected while a
+table rebuild re-inserts records). Every field is updated only through `EQ_COUNT`, so all of them stay
+0 in release/sanitize builds and are meaningful only in the counting build (`BUILD=count`). Structure
+statistics that are cheap enough to keep in timing builds (heap purges, purged and stale entries, peak
+size, table rebuilds; AVL rebalances) are separate accessors on each structure, not counters.
+
+`app::make_queue("heap-nopurge")` builds Structure A with purging switched off. It exists only so the
+adversary can show the unpurged growth (`gen bloat`, `gen drain`); it keeps every observable result
+correct but deliberately breaks invariant A.5, and is never used by the simulator or the benchmarks.

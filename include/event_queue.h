@@ -47,8 +47,14 @@ struct Event {
 };
 static_assert(sizeof(Event) == 24, "Unsupported Event layout: update the memory figures in REPORT.md");
 
-// Operation counters for the Analyst. Only updated when built with -DEQ_COUNTING=1, so timing
-// builds pay nothing. Never put a side effect inside EQ_COUNT's arguments.
+// Operation counters for the Analyst. Every field is updated ONLY through EQ_COUNT, which compiles
+// to nothing unless built with -DEQ_COUNTING=1, so release (timing) builds never touch them.
+// Never put a side effect inside EQ_COUNT's arguments.
+//
+// Separately, each structure keeps a few cheap event-level statistics in ALL builds (heap: purges,
+// purged and stale entries, peak array size, table rebuilds; AVL: single/double rebalances). They
+// cost one increment per purge/rebuild/rotation and one comparison per heap insert; they are read
+// through the structures' own accessors, never through Counters. (Overhead check: REPORT.md §6.2.)
 struct Counters {
     std::uint64_t comparisons      = 0;
     std::uint64_t moves            = 0;
@@ -56,7 +62,8 @@ struct Counters {
     std::uint64_t rotations_double = 0;
     std::uint64_t purges           = 0;
     std::uint64_t purged_entries   = 0;
-    std::uint64_t hash_probes      = 0;
+    std::uint64_t hash_probes      = 0;  // heap table: slots inspected by find / insert
+    std::uint64_t hash_rehash_probes = 0;  // heap table: slots inspected while re-inserting in a rebuild
 };
 #ifndef EQ_COUNTING
 #define EQ_COUNTING 0
