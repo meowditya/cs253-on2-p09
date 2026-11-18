@@ -1,0 +1,36 @@
+BIN=build/release/bin scripts/run_tests.sh 
+
+== unit tests
+interface contract test: all checks passed
+test_opstream: all checks passed
+test_structA: all checks passed
+test_structB: all checks passed
+test_oracle: all checks passed
+test_checkers_mutations: all checks passed
+test_sim: all checks passed
+
+== command-line hardening, profiler logic, CSV validation
+cli_test: all checks passed
+profile_test: all checks passed
+plot_test: all checks passed
+
+== adversarial and edge-case suites
+suites: 16 files x 3 queues match their expected output (hand-written ones checked after every op)
+attacks: bloat 3100 entries without purge vs 200 with (live 100); drain 500 vs 1; ascending 990/1000 rebalances
+
+== differential test: oracle = heap = avl
+difftest wall_s=13.84
+difftest seed=1 ops=1000000 max_live=10000: PASS (oracle = heap = avl on every result; checkers passed)
+difftest wall_s=14.10
+difftest seed=2 ops=1000000 max_live=10000: PASS (oracle = heap = avl on every result; checkers passed)
+difftest wall_s=13.71
+difftest seed=3 ops=1000000 max_live=10000: PASS (oracle = heap = avl on every result; checkers passed)
+
+== full scale: 10^6 resident events, 10^6 operations
+test_fullscale: all checks passed
+
+== application: identical output on every queue
+identical traced output (1e5 events, seeds 1-3): heap = avl = oracle
+identical summaries (1e6 events, seeds 1-3): heap = avl
+
+ALL TESTS PASSED
