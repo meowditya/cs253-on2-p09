@@ -1,0 +1,10 @@
+# Equal times leave in insertion (seq) order; an earlier time still comes first.
+I 5 0 1
+I 5 0 2
+I 3 0 3
+I 5 0 4
+P
+P
+P
+P
+P

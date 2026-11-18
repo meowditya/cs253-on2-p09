@@ -1,0 +1,8 @@
+# Every query on an empty queue fails and every cancel is false.
+P
+K
+S 0
+S -9223372036854775808
+C 0
+F 0 0
+F 0 18446744073709551615

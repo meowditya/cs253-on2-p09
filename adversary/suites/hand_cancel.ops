@@ -1,0 +1,16 @@
+# Cancel semantics: twice, after pop, wrong time, exact value, never issued, reserved seqs.
+I 10 0 0
+I 20 0 0
+I 30 0 0
+C 0
+C 0
+F 21 1
+F 20 1
+C 1
+F 0 18446744073709551615
+F 0 18446744073709551614
+C 7
+F 30 99
+P
+C 2
+K

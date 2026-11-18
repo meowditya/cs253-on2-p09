@@ -16,6 +16,7 @@ Declared use costs no marks (handout §2). Each member keeps their own rows accu
 | *date* | Sanchit Goyal (Adversary) | — | owner's review: `adversary/`, `scripts/run_suites.sh` | *(owner: add the date and what you checked or changed in your review; write "no changes" if none)* |
 | *date* | Ram Upadhyay (Analyst) | — | owner's review: `bench/`, `results/plot.py`, `scripts/run_bench.sh`, `scripts/profile.sh`, revised `docs/MODEL_D6.md` | *(owner: add the date and what you checked or changed in your review; write "no changes" if none)* |
 | 13 Nov 2026 | Aditya Singh (Architect) | Claude (Anthropic) | filled in the team roles; wrote REPORT.md sections 2, 3, 4 (closing paragraph), 7 (explanations) and 8; wrote `scripts/fill_report.py`, which copies the measured results of `make bench` into REPORT.md §6 and marks each prediction confirmed or refuted mechanically; exported the Claude-drafted derivations `docs/derivations/D1–D6.md` to `D1–D6.pdf` with each owner's name (`scripts/make_pdfs.sh`). No measurement was produced by Claude: §6 is filled only by the team's own `make bench` run. | *(each author: note here if you rewrote or corrected your derivation)* |
+| 19 Nov 2026 | Sanchit Goyal (Adversary) | OpenAI Codex | Imported the supplied adversary generators, distributions, 16 suites and expected outputs, suite runner, CLI regression tests, timeout helper, and D5 Markdown/PDF into `adversary/generators`; prepared Git commit and validation. | Source files copied unchanged from `Project9_complete.zip`; updated this disclosure. Validation results and repository limitations are recorded below. |
 
 ## Other tools
 
@@ -28,3 +29,27 @@ Declared use costs no marks (handout §2). Each member keeps their own rows accu
 | perf or valgrind (cachegrind) | | cache evidence, if available (`scripts/profile.sh`) |
 | Git / GitHub | | version control, pull requests, reviews |
 | Overleaf / LaTeX (or Markdown → PDF) | | derivation PDFs |
+
+## Adversary import validation — 19 Nov 2026
+
+Codex imported the requested files for Sanchit Goyal without changing the supplied
+source, fixtures, or D5 documents. The shell scripts and Python timeout helper
+were marked executable for Linux. No personal owner-review claim was filled in.
+
+Validation used a separate extraction of the complete supplied ZIP, with g++
+15.2.0 and Python 3.14.4. The `gen`, `replay`, `bench_hold`, `bench_sweep`, and
+`difftest` release binaries built with the supplied Makefile.
+
+- All 16 suites matched their expected output on heap, AVL, and oracle (48 replays).
+- Attack checks passed: bloat 3100 physical entries without purge versus 200
+  with purge (100 live); drain 500 versus 1; ascending 990/1000 rebalances.
+- `tests/cli_test.sh` passed all executed checks. Its plot.py check was skipped
+  because matplotlib was not installed.
+- Shell/Python syntax checks passed; all 16 suites have expected-output mates.
+- All 39 imported source, fixture, and D5 files match the ZIP byte for byte.
+
+At import time, remote `main` contained only the empty initial commit
+`7a8c44cc6f963247345757c2c1a3ce8fc5d884d7`. This branch adds only the files
+requested for the adversary contribution, plus this disclosure. It needs the
+other project modules and build files before these checks can run from the
+repository itself; the validation above used the complete ZIP's dependencies.
