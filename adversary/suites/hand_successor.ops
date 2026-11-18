@@ -1,0 +1,14 @@
+# successor(t) is strict; ties by seq; INT64 bounds; cancelled events are skipped.
+I 5 0 0
+I 1 0 1
+I 9 0 2
+I 5 0 3
+S 0
+S 1
+S 4
+S 5
+S 9
+S -9223372036854775808
+S 9223372036854775807
+C 0
+S 4
