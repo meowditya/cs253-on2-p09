@@ -1,0 +1,46 @@
+make BUILD=count build
+make[1]: Entering directory '<tree>'
+g++ -std=c++17 -Wall -Wextra -pedantic -Werror -O2 -DNDEBUG -DEQ_COUNTING=1 -Iinclude -Isrc/structA -Isrc/structB -Ioracle -Iapp -Iadversary -Ibench -MMD -MP -c bench/hold.cpp -o build/count/obj/bench/hold.o
+g++ build/count/obj/bench/hold.o build/count/obj/src/structA/seq_table.o build/count/obj/src/structA/lazy_heap.o build/count/obj/src/structB/avl_queue.o build/count/obj/oracle/sorted_oracle.o build/count/obj/app/queue_factory.o  -o build/count/bin/bench_hold
+g++ -std=c++17 -Wall -Wextra -pedantic -Werror -O2 -DNDEBUG -DEQ_COUNTING=1 -Iinclude -Isrc/structA -Isrc/structB -Ioracle -Iapp -Iadversary -Ibench -MMD -MP -c bench/cancel_sweep.cpp -o build/count/obj/bench/cancel_sweep.o
+g++ build/count/obj/bench/cancel_sweep.o build/count/obj/src/structA/seq_table.o build/count/obj/src/structA/lazy_heap.o build/count/obj/src/structB/avl_queue.o build/count/obj/oracle/sorted_oracle.o build/count/obj/app/queue_factory.o  -o build/count/bin/bench_sweep
+g++ -std=c++17 -Wall -Wextra -pedantic -Werror -O2 -DNDEBUG -DEQ_COUNTING=1 -Iinclude -Isrc/structA -Isrc/structB -Ioracle -Iapp -Iadversary -Ibench -MMD -MP -c tests/interface_contract_test.cpp -o build/count/obj/tests/interface_contract_test.o
+g++ build/count/obj/tests/interface_contract_test.o  -o build/count/bin/interface_contract_test
+g++ -std=c++17 -Wall -Wextra -pedantic -Werror -O2 -DNDEBUG -DEQ_COUNTING=1 -Iinclude -Isrc/structA -Isrc/structB -Ioracle -Iapp -Iadversary -Ibench -MMD -MP -c tests/test_structB.cpp -o build/count/obj/tests/test_structB.o
+g++ build/count/obj/tests/test_structB.o build/count/obj/src/structA/seq_table.o build/count/obj/src/structA/lazy_heap.o build/count/obj/src/structB/avl_queue.o build/count/obj/oracle/sorted_oracle.o build/count/obj/app/queue_factory.o build/count/obj/oracle/checkers.o build/count/obj/oracle/replay_core.o  -o build/count/bin/test_structB
+make[1]: Leaving directory '<tree>'
+BIN=build/release/bin COUNT_BIN=build/count/bin scripts/run_bench.sh --quick
+== hold model: N in {1000 10000 100000} x {exponential uniform bimodal triangular} x seeds {1 2}
+   N=1000 done
+   N=10000 done
+   N=100000 done
+== overhead control (scripted replay, no queue)
+== small-N crossover: heap, avl, oracle at N in {10 100}
+== quantisation sensitivity: mean 10^6 us instead of 10^3 us (N=10000)
+== cancellation sweep: N=100000, policy uniform, c in {0 5000 9500} (basis points)
+   c=0 done
+   c=5000 done
+   c=9500 done
+== stress policy (latest key) and scaling, c in {0, 5000, 9500}
+== operation counts (count build, one seed per point)
+== figures (plot.py validates every CSV first)
+plot.py (quick): validated 74 hold, 24 sweep, 30 count rows; wrote results/summary.csv (101 rows), results/paired_ratios.csv (44 ratios), figures in results/figures/
+== profiler (timed region only; optional)
+STATUS: USABLE
+profiler: cachegrind
+workload: bench_hold --dist exponential --n 100000 --warmup 200000; timed holds M=200000 (heap, avl) and M=1 (heap, region self-check only)
+counted region: the timed hold loop only (bench::ProfileRegion); per-hold figures = count / holds
+region self-check: PASSED (1 timed hold counted 5141 instructions, > 0 and < 100 000; init + warm-up are excluded)
+evidence: summary.csv and one raw output file per run
+NOTE: cachegrind SIMULATES a cache (its own L1/LL model); it is not a hardware measurement. Quote it as simulated.
+queue,holds,instructions,instructions_per_hold,d_refs_or_l1_loads,l1d_misses,ll_misses,l1d_misses_per_hold,ll_misses_per_hold
+heap,200000,163031084,815.1554,53656168,3350766,456033,16.7538,2.2802
+avl,200000,488355511,2441.7776,211176850,5410462,87761,27.0523,0.4388
+heap,1,5141,5141.0000,1862,327,327,327.0000,327.0000
+benchmarks done: results/raw/*.csv, results/summary.csv, results/paired_ratios.csv, results/figures/*.png
+profiler: USABLE — results/profiler/summary.csv
+
+real	0m46.446s
+user	0m43.800s
+sys	0m1.812s
+exit 0

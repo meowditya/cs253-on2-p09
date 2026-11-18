@@ -1,0 +1,6 @@
+gcc exit 0
+clang exit 0
+libcxx exit 0
+gcc: checksum=0xcbd12e722cac3922 monitor_successors=0xebce99f1c00b6707 
+clang: checksum=0xcbd12e722cac3922 monitor_successors=0xebce99f1c00b6707 
+libcxx: checksum=0xcbd12e722cac3922 monitor_successors=0xebce99f1c00b6707 

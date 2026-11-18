@@ -1,0 +1,4 @@
+queue,holds,instructions,instructions_per_hold,d_refs_or_l1_loads,l1d_misses,ll_misses,l1d_misses_per_hold,ll_misses_per_hold
+heap,200000,163031084,815.1554,53656168,3350766,456033,16.7538,2.2802
+avl,200000,488355511,2441.7776,211176850,5410462,87761,27.0523,0.4388
+heap,1,5141,5141.0000,1862,327,327,327.0000,327.0000
