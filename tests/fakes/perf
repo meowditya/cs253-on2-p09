@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# tests/fakes/perf — a FAKE perf used only by tests/profile_test.sh to exercise scripts/profile.sh's
+# decision logic. It produces no real counts: FAKE_MAIN / FAKE_ONE / FAKE_EXIT choose what it reports.
+[[ "$*" == *--help* ]] && { echo "  --control fifo:ctl-fifo[,ack-fifo]"; exit 0; }
+out=""; holds=""; prev=""
+for a in "$@"; do [[ $prev == -o ]] && out=$a; [[ $prev == --holds ]] && holds=$a; prev=$a; done
+[[ -z $out ]] && exit 0                       # `perf stat -e instructions true` probe
+if [[ $holds == 1 ]]; then ins=${FAKE_ONE:-5000}; else ins=${FAKE_MAIN:-800000000}; fi
+printf '%s,,instructions,100.00,,\n1000,,L1-dcache-loads,100.00,,\n10,,L1-dcache-load-misses,100.00,,\n1,,LLC-load-misses,100.00,,\n' "$ins" > "$out"
+exit "${FAKE_EXIT:-0}"
