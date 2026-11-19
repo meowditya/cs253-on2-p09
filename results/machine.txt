@@ -1,0 +1,13 @@
+date: Thu Nov 19 19:02:58 IST 2026
+uname: Darwin Adityas-Mac-2.local 27.2.0 Darwin Kernel Version 27.2.0: Wed Oct 14 23:47:07 PDT 2026; root:xnu-13432.41.4~25/RELEASE_ARM64_T8132 arm64
+Apple M4
+hw.ncpu: 10
+hw.l1dcachesize: 65536
+hw.l2cachesize: 4194304
+hw.memsize: 17179869184
+compiler: Apple clang version 21.0.0 (clang-2100.4.1.1)
+flags: -std=c++17 -O2 -DNDEBUG (release); counting build adds -DEQ_COUNTING=1
+mode: --full
+power: Now drawing from 'AC Power'
+load average at start: 3.19 2.50 2.40
+run conditions: one run, benchmarks strictly one after another; close other programs and stay plugged in

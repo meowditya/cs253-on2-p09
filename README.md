@@ -34,7 +34,7 @@ writing the valid timing results).
 | `make` | builds all programs and tests into `build/release/bin/` | < 1 min |
 | `make test` | unit tests, 8 mutation tests, command-line hardening, profiler-logic and CSV-validation checks, 16 adversarial/edge suites on 3 queues, three 10⁶-operation differential histories, a 10⁶-resident full-scale test, simulator identical-output checks | ~1 min |
 | `make demo` | the live demonstration (see below) | ~15 s |
-| `make bench` | the full benchmark matrix → `results/raw/*.csv`, then `plot.py` validates every CSV and writes `results/summary.csv`, `results/paired_ratios.csv`, throughput figures `results/figures/*.png`; `scripts/fill_report.py` then writes REPORT.md §6.1 and §6.3–6.8 from those files; cache profile of the timed loop only → `results/profiler/` | 40 min on our 2-core test VM (one complete run); measure yours |
+| `make bench` | the full benchmark matrix → `results/raw/*.csv`, then `plot.py` validates every CSV and writes `results/summary.csv`, `results/paired_ratios.csv`, throughput figures `results/figures/*.png`; `scripts/fill_report.py` then writes REPORT.md §6.1 and §6.3–6.8 from those files; cache profile of the timed loop only → `results/profiler/`  | about 13 min on an Apple M4 (19 Nov run) |
 | `make bench-quick` | a ~1-minute smoke version of every experiment (not for the report) | ~1 min |
 | `make pdfs` | rebuild `docs/derivations/D1–D6.pdf` from their sources (needs pandoc + xelatex; the PDFs are committed) | seconds |
 | `make sanitize` | the tests rebuilt with AddressSanitizer + UndefinedBehaviorSanitizer; leak detection on Linux (Apple's toolchain has no LeakSanitizer, so it is off on macOS — the run prints which) | ~3 min |
