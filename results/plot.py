@@ -423,20 +423,60 @@ def main(argv=None):
     plt.close(fig)
 
     # operation counts (count build)
+    # dashed lines and bands: the P1 predictions of docs/MODEL_D6.md (committed before the measurements)
     fig, axes = plt.subplots(1, 3, figsize=(13, 4))
     for ax, col in zip(axes, ("comparisons", "moves", "hash_probes")):
+        xs_all = []
         for q, style in (("heap", "o-"), ("avl", "s-")):
             pts = sorted((r["n"], r[col] / r["holds"]) for r in hold_count if r["queue"] == q and r["dist"] == "exponential")
+            xs_all += [p[0] for p in pts]
             if pts and any(p[1] > 0 for p in pts):
-                ax.plot([p[0] for p in pts], [p[1] for p in pts], style, label=q)
+                ax.plot([p[0] for p in pts], [p[1] for p in pts], style, label=f"{q} (measured)")
+        xs = sorted(set(xs_all))
+        if xs and col == "comparisons":
+            L = [math.log2(x) for x in xs]
+            ax.plot(xs, [2 * l for l in L], "k--", lw=1, label="heap predicted 2·log2 N (P1)")
+            ax.fill_between(xs, [2 * l - 3 for l in L], [2 * l + 3 for l in L], color="k", alpha=0.08, label="P1 band ±3")
+        if xs and col == "moves":
+            ax.plot(xs, [math.log2(x) - 1.5 for x in xs], "k--", lw=1, label="heap predicted log2 N − 1.5 (D6 §2)")
+        if xs and col == "hash_probes":
+            ax.plot(xs, [2.0] * len(xs), "k--", lw=1, label="heap predicted 2 (P1)")
+            ax.fill_between(xs, [1.7] * len(xs), [2.3] * len(xs), color="k", alpha=0.08, label="P1 band 1.7–2.3")
         ax.set_xscale("log")
-        ax.set_title(f"{col} per hold (exponential)" + tag, fontsize=9)
-        ax.set_xlabel("N")
+        ax.set_title(f"{col} per hold (exponential, counting build)" + tag, fontsize=9)
+        ax.set_xlabel("queue size N (log scale)")
+        ax.set_ylabel(f"{col} per hold")
         ax.grid(alpha=0.3)
-        ax.legend()
+        ax.legend(fontsize=7)
     fig.tight_layout()
     fig.savefig(os.path.join(fig_dir, "counts_per_hold.png"), dpi=150)
     plt.close(fig)
+
+    # measured heap/AVL throughput ratio (paired, same seed) against the P3 band of docs/MODEL_D6.md
+    rat = defaultdict(list)
+    for exp, k, h, a in paired:
+        if exp == "hold":
+            rat[(h["dist"], h["n"])].append(a["elapsed_ns"] / h["elapsed_ns"])
+    if rat:
+        fig, ax = plt.subplots(figsize=(7, 4.5))
+        for d, style in zip(DISTS, ("o-", "s-", "^-", "D-")):
+            pts = sorted((n, mean_sd(v)) for (dd, n), v in rat.items() if dd == d)
+            if pts:
+                ax.errorbar([n for n, _ in pts], [m[0] for _, m in pts], yerr=[m[1] for _, m in pts], fmt=style,
+                            capsize=3, label=f"{d} (measured)")
+        ax.plot([1e3, 1e6], [1.3, 1.5], "k--", lw=1, label="P3 predicted range (lower edge)")
+        ax.plot([1e3, 1e6], [2.0, 3.0], "k:", lw=1, label="P3 predicted range (upper edge)")
+        ax.fill_between([1e3, 1e6], [1.3, 1.5], [2.0, 3.0], color="k", alpha=0.07)
+        ax.axhline(1.0, color="r", lw=0.8, label="1 = equal speed")
+        ax.set_xscale("log")
+        ax.set_xlabel("queue size N (log scale)")
+        ax.set_ylabel("heap / AVL throughput (= AVL / heap time), mean ± sd")
+        ax.set_title("Hold model: measured ratio vs predicted P3 (D6)" + tag, fontsize=9)
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=7)
+        fig.tight_layout()
+        fig.savefig(os.path.join(fig_dir, "ratio_vs_predicted.png"), dpi=150)
+        plt.close(fig)
     for r in hold_count:
         h = r["holds"]
         summary.append((mode, "count_hold", r["queue"], r["dist"], r["n"], "", r["warmup"], h, r["mean_us"], "", "", 1,
