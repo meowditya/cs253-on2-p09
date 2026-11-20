@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""scripts/fill_report.py — write REPORT.md's measured sections (6.1, 6.3–6.8) from the files that
+"""scripts/fill_report.py — write REPORT.md's measured sections (10.1 and 11.1–11.6) from the files that
 `make bench` produced. Owner: Analyst. Standard library only.
 
     python3 scripts/fill_report.py [--mode full|quick] [--root DIR]
@@ -7,7 +7,7 @@
 It only reads results/summary.csv (written by results/plot.py AFTER it validated every CSV),
 results/raw/sweep.csv, results/machine.txt and results/profiler/; it copies numbers into tables and
 states, mechanically, whether each prediction P1–P7 of docs/MODEL_D6.md held. It invents nothing: with
-no results it refuses to run. full mode replaces the text between the MEASURED-A (6.1) and MEASURED-B (6.3–6.8) markers in REPORT.md;
+no results it refuses to run. full mode replaces the text between the MEASURED-A (10.1) and MEASURED-B (11.1–11.6) markers in REPORT.md;
 quick mode writes results/REPORT_measured_QUICK.md instead and never touches REPORT.md.
 Re-running is safe (the block is regenerated). The Analyst should read the block and may add
 explanations below any prediction marked REFUTED — outside the markers, or they will be overwritten.
@@ -31,6 +31,13 @@ def note(r):
 def fmt(v):
     v = float(v)
     return f"{v/1e6:.2f} M" if v >= 1e6 else f"{v/1e3:.0f} k"
+
+
+def pw(n):
+    "10**k as 10ᵏ for captions; anything else unchanged"
+    if isinstance(n, int) and n >= 1000 and 10 ** round(math.log10(n)) == n:
+        return "10" + str(round(math.log10(n))).translate(str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹"))
+    return str(n)
 
 
 def table(head, rows):
@@ -60,7 +67,7 @@ def build(root, mode):
         verdicts.append((p, "CONFIRMED" if ok else "REFUTED", text))
 
     # ---------------------------------------------------------------- 6.1
-    add("### 6.1 Machine **[MEASURE]**\n")
+    add("### 10.1 Machine **[MEASURE]**\n")
     with open(os.path.join(res, "machine.txt")) as f:
         add("```\n" + f.read().rstrip() + "\n```\n")
     add("All timings below come from this one machine and this one run of `make bench`"
@@ -72,7 +79,7 @@ def build(root, mode):
     ns = sorted({r["n"] for r in E["hold"]})
 
     # ---------------------------------------------------------------- 6.3
-    add("### 6.3 Predicted (docs/MODEL_D6.md, committed before the final runs) vs measured **[MEASURE]**\n")
+    add("### 11.1 Predicted (docs/MODEL_D6.md, committed before the final runs) vs measured **[MEASURE]**\n")
     add("Operation counts per hold, counting build (one seed per point):\n")
     rows, bad = [], []
     for r in sorted(E["count_hold"], key=lambda r: (r["dist_or_policy"], r["n"], r["queue"])):
@@ -92,6 +99,18 @@ def build(root, mode):
                "P1 predicted", "P1"], rows) + "\n")
     verdict("P1", not bad, f"{len(rows) - len(bad)} of {len(rows)} points inside the predicted ranges"
             + (f"; outside: {', '.join(bad)}" if bad else ""))
+    hx = [r for r in E["count_hold"] if r["queue"] == "heap" and r["dist_or_policy"] == "exponential"]
+    ax_ = {r["n"]: float(note(r)["cmp"]) for r in E["count_hold"] if r["queue"] == "avl" and r["dist_or_policy"] == "exponential"}
+    hin = [r for r in hx if f"heap exponential N={r['n']}" not in bad]
+    cr = [ax_[r["n"]] / float(note(r)["cmp"]) for r in hx if r["n"] in ax_]
+    add("![operation counts](results/figures/counts_per_hold.png)\n")
+    add(f"*Figure 1 — operation counts per hold in the counting build (exponential increments), with the P1 "
+        f"predictions of docs/MODEL_D6.md drawn on the same axes (dashed lines, grey bands). Notice that the heap's "
+        f"comparisons and hash probes lie inside the predicted bands at {len(hin)} of {len(hx)} sizes, and that AVL "
+        + (f"needs about half the heap's comparisons ({min(cr):.3f}–{max(cr):.3f}×)" if cr else "has no comparison counts")
+        + "; P1 fails on the AVL rebalance counts in the table above. Logarithmic x-axis (N spans 10³–10⁶). One seed "
+        "per point (the counting build is deterministic for a seed), so no spread is shown. Produced by "
+        "`results/plot.py` from `results/raw/hold_count.csv`.*\n")
 
     # P2, P3
     sides = [ratio[(d, n)] for d in DISTS for n in ns if n >= 1000]
@@ -108,6 +127,15 @@ def build(root, mode):
     verdict("P3", p3, f"AVL/heap time ratio at N={lo}: {min(rlo):.2f}–{max(rlo):.2f} (predicted 1.3–2); at N={hi}: "
             f"{min(rhi):.2f}–{max(rhi):.2f}" + (" (predicted 1.5–3)" if hi == 10 ** 6 else "")
             + f"; grows from smallest to largest N for {len(grow)} of {len(DISTS)} distributions")
+    below = [d for d, x in zip(DISTS, rhi) if x < (1.5 if hi == 10 ** 6 else 0)]
+    add("![ratio vs prediction](results/figures/ratio_vs_predicted.png)\n")
+    add(f"*Figure 2 — paired heap/AVL throughput ratio (same workload and seed; mean ± s.d. over the seeds) against "
+        f"the P3 range of docs/MODEL_D6.md (grey band; D6 states the range at N = 10³ and 10⁶, and the straight edges "
+        f"between them on the logarithmic N axis are our interpolation). Notice that the heap is faster everywhere "
+        f"(ratio > 1, red line) but the ratio does not grow with N as predicted: at N = {pw(lo)} it is {min(rlo):.2f}–{max(rlo):.2f}, "
+        f"at N = {pw(hi)} {min(rhi):.2f}–{max(rhi):.2f}"
+        + (f", below the predicted lower edge for {', '.join(below)}" if below else "")
+        + ". Produced by `results/plot.py` from `results/raw/hold.csv`.*\n")
     # P4
     spread = {}
     for q in ("heap", "avl"):
@@ -118,7 +146,14 @@ def build(root, mode):
             f"{100*spread['avl']:.1f} % (predicted: heap almost none, AVL < 20 %)")
 
     # ---------------------------------------------------------------- 6.4
-    s64 = ["### 6.4 Hold model **[MEASURE]**\n", "![hold model](results/figures/hold_throughput_vs_n.png)\n",
+    falling = all(all(float(tput[(q, d, a)]["mean_ops_per_sec"]) > float(tput[(q, d, b)]["mean_ops_per_sec"])
+                      for a, b in zip(ns, ns[1:])) for q in ("heap", "avl") for d in DISTS)
+    s64 = ["### 11.2 Hold model **[MEASURE]**\n", "![hold model](results/figures/hold_throughput_vs_n.png)\n",
+           f"*Figure 3 — holds per second against queue size N, one panel per Jones distribution, mean ± s.d. over "
+           f"the seeds; dotted: the same loop with no queue. Log–log axes (N spans 10³–10⁶). Notice the heap above AVL "
+           f"at {len(heap_all)} of {len(sides)} points on every seed"
+           + (", and both structures slowing at every step in N" if falling else "")
+           + ". Produced by `results/plot.py` from `results/raw/hold.csv`.*\n",
            "Throughput in holds per second, mean ± s.d. over the seeds; ratio = heap/AVL throughput on the same "
            "seed (= AVL/heap time).\n"]
     rows = []
@@ -135,7 +170,7 @@ def build(root, mode):
                + ", ".join(f"N={n}: {v} holds/s" for n, v in ctl) + ". It is context only; nothing is subtracted.\n")
 
     # ---------------------------------------------------------------- 6.5
-    s65 = ["### 6.5 Small queues **[MEASURE]**\n", "![small N](results/figures/small_n_crossover.png)\n"]
+    s65 = ["### 11.3 Small queues **[MEASURE]**\n", "![small N](results/figures/small_n_crossover.png)\n"]
     small = defaultdict(dict)
     for r in E["hold_small_n"]:
         small[r["n"]][r["queue"]] = float(r["mean_ops_per_sec"])
@@ -151,9 +186,14 @@ def build(root, mode):
     verdict("P5", p5 if mode == "full" else bool(arr),
             f"sorted array fastest at N = {arr or 'none'}; slower than both heap and AVL at N = {lose or 'none'} "
             "(predicted: fastest up to about 30, loses to both from 100–300)")
+    s65.insert(2, f"*Figure 4 — holds per second for small queues (exponential increments), sorted array (the oracle) "
+               f"against heap and AVL, mean ± s.d. over the seeds; logarithmic N axis. Notice that the sorted array is "
+               f"fastest at N = {', '.join(map(str, arr)) or 'no size'} and the heap from N = "
+               f"{min((n for n in sorted(small) if winners[n] == 'heap'), default='—')} on. Produced by `results/plot.py` "
+               f"from `results/raw/hold.csv` (experiment hold_small_n).*\n")
 
     # ---------------------------------------------------------------- 6.6
-    s66 = ["### 6.6 Cancellation sweep **[MEASURE]**\n", "![sweep](results/figures/sweep_uniform.png)\n",
+    s66 = ["### 11.4 Cancellation sweep **[MEASURE]**\n", "![sweep](results/figures/sweep_uniform.png)\n",
            "![policies](results/figures/sweep_policies.png)\n", "![heap size](results/figures/heap_physical_ratio.png)\n",
            "Throughput in steps per second (one removal + one insertion); ratio = heap/AVL on the same seed. A point "
            "favours one structure only if every seed's ratio is strictly on that side; this is a consistency "
@@ -196,9 +236,35 @@ def build(root, mode):
     verdict("P7", worst <= 2.0 + 1e-3 and peak[max(peak)] > 1.5,
             f"largest peak physical/live = {worst:.4f} (bound 2, D1; at most 2 + 1/N inside an operation); "
             f"{peak[max(peak)]:.3f} at the highest rate")
+    uni = sorted((r for r in E["ratio_sweep"] if r["dist_or_policy"] == "uniform"), key=lambda r: (r["n"], float(r["x"])))
+    big = [r for r in uni if r["n"] == max(r["n"] for r in uni)]
+    if big:
+        n5, x0, x1 = big[0]["n"], big[0]["x"], big[-1]["x"]
+        tp = lambda q, x: fmt(sw[(q, "uniform", n5, x)]["mean_ops_per_sec"])
+        trend5 = (f"Notice that from K/M = {float(x0):g} to {float(x1):g} the heap goes from {tp('heap', x0)} to {tp('heap', x1)} "
+                  f"steps/s while AVL goes from {tp('avl', x0)} to {tp('avl', x1)}, so the heap/AVL ratio goes from "
+                  f"{float(big[0]['mean_ops_per_sec']):.2f} to {float(big[-1]['mean_ops_per_sec']):.2f}. ")
+    else:
+        n5, trend5 = "—", ""
+    caps = {
+        "sweep_uniform.png": "*Figure 5 — steps per second (one removal + one insertion) against the exact cancellation "
+            f"fraction K/M, N = {pw(n5)}, uniform victim, mean ± s.d. over the seeds; linear axes. " + trend5 +
+            "Produced by `results/plot.py` from `results/raw/sweep.csv`.*\n",
+        "sweep_policies.png": "*Figure 6 — the sweep for both victim policies (uniform, latest) and every N, mean ± s.d. "
+            "over the seeds; logarithmic y-axis (throughput spans an order of magnitude). Notice "
+            + ("no crossover: the heap stays above AVL in every series" if not cross else "the crossovers listed below")
+            + ". Produced by `results/plot.py` from `results/raw/sweep.csv`.*\n",
+        "heap_physical_ratio.png": "*Figure 7 — the heap's peak physical entries divided by live entries (maximum over "
+            f"the seeds) against K/M. Notice that it never exceeds the D1 bound 2 (dotted line; largest {worst:.4f}). "
+            "Produced by `results/plot.py` from `results/raw/sweep.csv`.*\n",
+    }
+    for i in range(len(s66) - 1, -1, -1):
+        for name, cap in caps.items():
+            if s66[i].startswith("![") and name in s66[i]:
+                s66.insert(i + 1, cap)
 
     # ---------------------------------------------------------------- 6.7
-    s67 = ["### 6.7 Quantisation sensitivity **[MEASURE]**\n",
+    s67 = ["### 11.5 Quantisation sensitivity **[MEASURE]**\n",
            "The same hold runs with mean increment 10⁶ µs instead of 10³ µs (so almost no increment rounds to zero):\n"]
     rows, same = [], True
     for r in sorted(E["ratio_hold_mean_us_1000000"], key=lambda r: r["dist_or_policy"]):
@@ -214,7 +280,7 @@ def build(root, mode):
                                                                if same else "changes the outcome at one or more points (see the table).") + "\n")
 
     # ---------------------------------------------------------------- 6.8
-    s68 = ["### 6.8 Cache behaviour **[MEASURE]**\n"]
+    s68 = ["### 11.6 Cache behaviour **[MEASURE]**\n"]
     pdir = os.path.join(res, "profiler")
     status = open(os.path.join(pdir, "STATUS")).read().strip() if os.path.exists(os.path.join(pdir, "STATUS")) else "UNAVAILABLE"
     if status == "USABLE":
@@ -254,7 +320,7 @@ def main():
         return 0
     path = os.path.join(a.root, "REPORT.md")
     s = open(path).read()
-    cut = block.index("### 6.3 ")
+    cut = block.index("### 11.1 ")
     for name, text in (("A", block[:cut].rstrip()), ("B", block[cut:].rstrip())):
         b, e = MARK[0].format(name), MARK[1].format(name)
         if s.count(b) != 1 or s.count(e) != 1:
@@ -263,7 +329,7 @@ def main():
         s = head + b + "\n" + text + "\n" + e + rest.split(e)[1]
     with open(path, "w") as f:
         f.write(s)
-    print("fill_report: REPORT.md sections 6.1 and 6.3–6.8 written from results/")
+    print("fill_report: REPORT.md sections 10.1 and 11.1–11.6 written from results/")
     return 0
 
 

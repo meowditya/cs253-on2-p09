@@ -1,7 +1,7 @@
 // oracle/replay_main.cpp — bin/replay: run a .ops file on one queue (INTERFACE.md §7).
 // Owner: Oracle owner.
 //
-//   replay --queue heap|avl|oracle|heap-nopurge [--check N] [--stats] file.ops
+//   replay --queue heap|avl|oracle|heap-nopurge [--check N] [--stats] [file.ops | -]   (no file or "-": stdin)
 //
 // stdout: one canonical line per operation, then "END size=… issued=…" (identical for every
 // correct queue). --check N runs the invariant checker every N operations (exit 3 on violation).
@@ -25,7 +25,7 @@
 #include "replay_core.h"
 
 static int usage() {
-    std::fprintf(stderr, "usage: replay --queue heap|avl|oracle|heap-nopurge [--check N] [--stats] file.ops\n");
+    std::fprintf(stderr, "usage: replay --queue heap|avl|oracle|heap-nopurge [--check N] [--stats] [file.ops | -]\n");
     return 2;
 }
 
@@ -41,18 +41,22 @@ static int run_main(int argc, char** argv) {
             if (!eq::detail::parse_number(std::string(argv[++i]), n) || n == 0) return usage();
             check_every = static_cast<std::size_t>(n);
         } else if (a == "--stats") stats = true;
-        else if (!a.empty() && a[0] != '-' && file.empty()) file = a;
+        else if ((a == "-" || (!a.empty() && a[0] != '-')) && file.empty()) file = a;
         else return usage();
     }
-    if (file.empty()) return usage();
+    if (file.empty()) file = "-";                        // no file (or "-"): read the stream from stdin
     auto q = app::make_queue(queue);
     if (!q) { std::fprintf(stderr, "replay: unknown queue '%s'\n", queue.c_str()); return 2; }
 
-    std::ifstream in(file);
-    if (!in) { std::fprintf(stderr, "replay: cannot open %s\n", file.c_str()); return 2; }
     std::vector<eq::Op> ops;
     std::string err;
-    if (!eq::read_ops(in, file, ops, err)) { std::fprintf(stderr, "replay: %s\n", err.c_str()); return 2; }
+    if (file == "-") {
+        if (!eq::read_ops(std::cin, "stdin", ops, err)) { std::fprintf(stderr, "replay: %s\n", err.c_str()); return 2; }
+    } else {
+        std::ifstream in(file);
+        if (!in) { std::fprintf(stderr, "replay: cannot open %s\n", file.c_str()); return 2; }
+        if (!eq::read_ops(in, file, ops, err)) { std::fprintf(stderr, "replay: %s\n", err.c_str()); return 2; }
+    }
 
     try {
         replay::State st;
