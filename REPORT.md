@@ -31,26 +31,26 @@ it in the viva.
 
 - **Aditya Singh (Architect).** The shared interface `include/event_queue.h`, `include/rng.h`,
   `include/opstream.h`, `include/canonical.h`, `INTERFACE.md`, the `Makefile` and the interface contract
-  test ([#1](https://github.com/meowditya/dsa-project/pull/1), [`5659ccf`](https://github.com/meowditya/dsa-project/commit/5659ccf)); the shared test helper and op-stream test ([#2](https://github.com/meowditya/dsa-project/pull/2)); the retransmission-timer
+  test ([#1](https://github.com/meowditya/cs253-on2-p09/pull/1), [`5659ccf`](https://github.com/meowditya/cs253-on2-p09/commit/5659ccf)); the shared test helper and op-stream test ([#2](https://github.com/meowditya/cs253-on2-p09/pull/2)); the retransmission-timer
   simulator `app/`, the queue factory, `tests/test_sim.cpp`, `scripts/run_tests.sh`,
-  `scripts/check_identical.sh`, `scripts/demo.sh` and D3 ([#9](https://github.com/meowditya/dsa-project/pull/9), [#10](https://github.com/meowditya/dsa-project/pull/10), [#11](https://github.com/meowditya/dsa-project/pull/11); D3.pdf fixed in [#12](https://github.com/meowditya/dsa-project/pull/12));
-  `scripts/fill_report.py` (committed in [#13](https://github.com/meowditya/dsa-project/pull/13)); the full `make bench` run on his Mac and its results
-  ([#16](https://github.com/meowditya/dsa-project/pull/16)); `scripts/run_all.sh`, this report's structure and the README.
+  `scripts/check_identical.sh`, `scripts/demo.sh` and D3 ([#9](https://github.com/meowditya/cs253-on2-p09/pull/9), [#10](https://github.com/meowditya/cs253-on2-p09/pull/10), [#11](https://github.com/meowditya/cs253-on2-p09/pull/11); D3.pdf fixed in [#12](https://github.com/meowditya/cs253-on2-p09/pull/12));
+  `scripts/fill_report.py` (committed in [#13](https://github.com/meowditya/cs253-on2-p09/pull/13)); the full `make bench` run on his Mac and its results
+  ([#16](https://github.com/meowditya/cs253-on2-p09/pull/16)); `scripts/run_all.sh`, this report's structure and the README.
 - **Gulam Abbas (Structure A).** `src/structA/seq_table.{h,cpp}` (the hash table written from scratch)
-  and `src/structA/lazy_heap.{h,cpp}`, `tests/test_structA.cpp` and D1 ([#4](https://github.com/meowditya/dsa-project/pull/4), [`318151a`](https://github.com/meowditya/dsa-project/commit/318151a)); owner's
-  review ([#17](https://github.com/meowditya/dsa-project/pull/17)).
+  and `src/structA/lazy_heap.{h,cpp}`, `tests/test_structA.cpp` and D1 ([#4](https://github.com/meowditya/cs253-on2-p09/pull/4), [`318151a`](https://github.com/meowditya/cs253-on2-p09/commit/318151a)); owner's
+  review ([#17](https://github.com/meowditya/cs253-on2-p09/pull/17)).
 - **Aryan Arya (Structure B).** `src/structB/avl_queue.{h,cpp}` (pool-based AVL tree),
-  `tests/test_structB.cpp` and D2 ([#6](https://github.com/meowditya/dsa-project/pull/6), [`d438582`](https://github.com/meowditya/dsa-project/commit/d438582)); owner's review ([#18](https://github.com/meowditya/dsa-project/pull/18)).
+  `tests/test_structB.cpp` and D2 ([#6](https://github.com/meowditya/cs253-on2-p09/pull/6), [`d438582`](https://github.com/meowditya/cs253-on2-p09/commit/d438582)); owner's review ([#18](https://github.com/meowditya/cs253-on2-p09/pull/18)).
 - **Hiransh Anand (Oracle).** `oracle/` — the sorted-array oracle, the invariant checkers, `replay`, the
   differential test with its shrinker — and `tests/test_oracle.cpp`, `tests/test_checkers_mutations.cpp`,
-  `tests/test_fullscale.cpp` and D4 ([#7](https://github.com/meowditya/dsa-project/pull/7), [`9d55897`](https://github.com/meowditya/dsa-project/commit/9d55897)); owner's review ([#21](https://github.com/meowditya/dsa-project/pull/21)).
+  `tests/test_fullscale.cpp` and D4 ([#7](https://github.com/meowditya/cs253-on2-p09/pull/7), [`9d55897`](https://github.com/meowditya/cs253-on2-p09/commit/9d55897)); owner's review ([#21](https://github.com/meowditya/cs253-on2-p09/pull/21)).
 - **Sanchit Goyal (Adversary).** `adversary/gen.cpp`, `adversary/distributions.h` (Jones's Table I), the
   16 suites with expected outputs, `scripts/run_suites.sh`, `tests/cli_test.sh`, `tests/run_timeout.py`
-  and D5 ([#8](https://github.com/meowditya/dsa-project/pull/8), [`f0885d4`](https://github.com/meowditya/dsa-project/commit/f0885d4)); owner's review ([#19](https://github.com/meowditya/dsa-project/pull/19)).
+  and D5 ([#8](https://github.com/meowditya/cs253-on2-p09/pull/8), [`f0885d4`](https://github.com/meowditya/cs253-on2-p09/commit/f0885d4)); owner's review ([#19](https://github.com/meowditya/cs253-on2-p09/pull/19)).
 - **Ram Upadhyay (Analyst).** The cost model `docs/MODEL_D6.md` = D6, committed before any measurement
-  ([#3](https://github.com/meowditya/dsa-project/pull/3), [`9b2bab6`](https://github.com/meowditya/dsa-project/commit/9b2bab65be34c50b45bac9bac46e5e6b0f18c648)); the benchmark harness `bench/`,
+  ([#3](https://github.com/meowditya/cs253-on2-p09/pull/3), [`9b2bab6`](https://github.com/meowditya/cs253-on2-p09/commit/9b2bab65be34c50b45bac9bac46e5e6b0f18c648)); the benchmark harness `bench/`,
   `results/plot.py`, `scripts/run_bench.sh`, `scripts/profile.sh`, `tests/plot_test.py`,
-  `tests/profile_test.sh` ([#13](https://github.com/meowditya/dsa-project/pull/13), [`317f096`](https://github.com/meowditya/dsa-project/commit/317f096)); owner's review ([#20](https://github.com/meowditya/dsa-project/pull/20)).
+  `tests/profile_test.sh` ([#13](https://github.com/meowditya/cs253-on2-p09/pull/13), [`317f096`](https://github.com/meowditya/cs253-on2-p09/commit/317f096)); owner's review ([#20](https://github.com/meowditya/cs253-on2-p09/pull/20)).
 
 ## 2. Problem
 
@@ -305,19 +305,19 @@ fixed code was first committed.
 
 | Date | Module | Symptom | How found | Fixed in |
 |---|---|---|---|---|
-| 9 Nov | all (counting) | operation counters were updated in timing builds too, adding work to the timed loop | external code review | [#1](https://github.com/meowditya/dsa-project/pull/1) (`include/event_queue.h`, `EQ_COUNT`) |
-| 9 Nov | oracle | the heap checker accepted a table record moved past an EMPTY slot, unreachable by probing (so `cancel` would fail) | external review; mutant M8 now proves the check | [#7](https://github.com/meowditya/dsa-project/pull/7) (`oracle/checkers.cpp`) |
-| 9 Nov | adversary, oracle, bench | `gen`, `replay`, `difftest`, `bench_*` accepted out-of-range or malformed arguments (hangs, `inf`/`nan` rows) | external review; now `tests/cli_test.sh` | [#7](https://github.com/meowditya/dsa-project/pull/7), [#8](https://github.com/meowditya/dsa-project/pull/8), [#13](https://github.com/meowditya/dsa-project/pull/13) |
-| 9 Nov | bench | sweep arithmetic K = round(c·M) could overflow for large M | external review | [#13](https://github.com/meowditya/dsa-project/pull/13) (`bench/cancel_sweep.cpp`) |
-| 9 Nov | bench, results | `plot.py` drew figures from incomplete or inconsistent CSVs (missing mates, duplicates, off-matrix rows) | external follow-up review; now `tests/plot_test.py` (15 defects rejected) | [#13](https://github.com/meowditya/dsa-project/pull/13) |
-| 9 Nov | bench | the profiler counted set-up as well as the timed loop; zero counts were accepted | external follow-up review; now `tests/profile_test.sh` | [#13](https://github.com/meowditya/dsa-project/pull/13) (`scripts/profile.sh`) |
-| 9 Nov | all programs | a failed CSV or stdout write (full disk) still exited 0 | external follow-up review | [#7](https://github.com/meowditya/dsa-project/pull/7), [#8](https://github.com/meowditya/dsa-project/pull/8), [#11](https://github.com/meowditya/dsa-project/pull/11), [#13](https://github.com/meowditya/dsa-project/pull/13) (exit code 4) |
-| 9 Nov | oracle | the shrinker did not verify that its result was 1-minimal | external review | [#7](https://github.com/meowditya/dsa-project/pull/7) |
-| 9 Nov | tests | the full-scale test did not keep exactly 10⁶ events live | external review | [#7](https://github.com/meowditya/dsa-project/pull/7) (`tests/test_fullscale.cpp`) |
-| 19 Nov | scripts | `scripts/check_identical.sh` committed without its executable bit, so the test run could not execute it | running the tests from a clone | [#9](https://github.com/meowditya/dsa-project/pull/9) |
-| 19 Nov | app | PR #9 was merged without the simulator sources | checking the merged tree | [#10](https://github.com/meowditya/dsa-project/pull/10), [#11](https://github.com/meowditya/dsa-project/pull/11) |
-| 19 Nov | docs | `D3.pdf` held Markdown text instead of a PDF | checking the files on GitHub | [#12](https://github.com/meowditya/dsa-project/pull/12), [`d030e74`](https://github.com/meowditya/dsa-project/commit/d030e74) |
-| 19 Nov | README | the commands table lost its separator row and rendered as text | reading the README on GitHub | [`4dbbb8e`](https://github.com/meowditya/dsa-project/commit/4dbbb8e) ([#16](https://github.com/meowditya/dsa-project/pull/16)) |
+| 9 Nov | all (counting) | operation counters were updated in timing builds too, adding work to the timed loop | external code review | [#1](https://github.com/meowditya/cs253-on2-p09/pull/1) (`include/event_queue.h`, `EQ_COUNT`) |
+| 9 Nov | oracle | the heap checker accepted a table record moved past an EMPTY slot, unreachable by probing (so `cancel` would fail) | external review; mutant M8 now proves the check | [#7](https://github.com/meowditya/cs253-on2-p09/pull/7) (`oracle/checkers.cpp`) |
+| 9 Nov | adversary, oracle, bench | `gen`, `replay`, `difftest`, `bench_*` accepted out-of-range or malformed arguments (hangs, `inf`/`nan` rows) | external review; now `tests/cli_test.sh` | [#7](https://github.com/meowditya/cs253-on2-p09/pull/7), [#8](https://github.com/meowditya/cs253-on2-p09/pull/8), [#13](https://github.com/meowditya/cs253-on2-p09/pull/13) |
+| 9 Nov | bench | sweep arithmetic K = round(c·M) could overflow for large M | external review | [#13](https://github.com/meowditya/cs253-on2-p09/pull/13) (`bench/cancel_sweep.cpp`) |
+| 9 Nov | bench, results | `plot.py` drew figures from incomplete or inconsistent CSVs (missing mates, duplicates, off-matrix rows) | external follow-up review; now `tests/plot_test.py` (15 defects rejected) | [#13](https://github.com/meowditya/cs253-on2-p09/pull/13) |
+| 9 Nov | bench | the profiler counted set-up as well as the timed loop; zero counts were accepted | external follow-up review; now `tests/profile_test.sh` | [#13](https://github.com/meowditya/cs253-on2-p09/pull/13) (`scripts/profile.sh`) |
+| 9 Nov | all programs | a failed CSV or stdout write (full disk) still exited 0 | external follow-up review | [#7](https://github.com/meowditya/cs253-on2-p09/pull/7), [#8](https://github.com/meowditya/cs253-on2-p09/pull/8), [#11](https://github.com/meowditya/cs253-on2-p09/pull/11), [#13](https://github.com/meowditya/cs253-on2-p09/pull/13) (exit code 4) |
+| 9 Nov | oracle | the shrinker did not verify that its result was 1-minimal | external review | [#7](https://github.com/meowditya/cs253-on2-p09/pull/7) |
+| 9 Nov | tests | the full-scale test did not keep exactly 10⁶ events live | external review | [#7](https://github.com/meowditya/cs253-on2-p09/pull/7) (`tests/test_fullscale.cpp`) |
+| 19 Nov | scripts | `scripts/check_identical.sh` committed without its executable bit, so the test run could not execute it | running the tests from a clone | [#9](https://github.com/meowditya/cs253-on2-p09/pull/9) |
+| 19 Nov | app | PR #9 was merged without the simulator sources | checking the merged tree | [#10](https://github.com/meowditya/cs253-on2-p09/pull/10), [#11](https://github.com/meowditya/cs253-on2-p09/pull/11) |
+| 19 Nov | docs | `D3.pdf` held Markdown text instead of a PDF | checking the files on GitHub | [#12](https://github.com/meowditya/cs253-on2-p09/pull/12), [`d030e74`](https://github.com/meowditya/cs253-on2-p09/commit/d030e74) |
+| 19 Nov | README | the commands table lost its separator row and rendered as text | reading the README on GitHub | [`4dbbb8e`](https://github.com/meowditya/cs253-on2-p09/commit/4dbbb8e) ([#16](https://github.com/meowditya/cs253-on2-p09/pull/16)) |
 
 The *design* safeguards in §4 and §8 (purge after pops, strict successor, FIFO ties) are each guarded by
 a mutation test that fails if the safeguard is removed; those are deliberate mutants, not bugs we had.
@@ -357,8 +357,8 @@ everything from a seed. All give identical results on the three queues.
 ## 9. Predicted cost model (Ram Upadhyay)
 
 The model is `docs/MODEL_D6.md` (= D6). It was committed on 17 Nov 2026, 19:43 IST, in
-[`9b2bab6`](https://github.com/meowditya/dsa-project/commit/9b2bab65be34c50b45bac9bac46e5e6b0f18c648) ([#3](https://github.com/meowditya/dsa-project/pull/3)); the measurements it predicts were committed on
-19 Nov 2026, 22:23 IST, in [`7ae0fdc`](https://github.com/meowditya/dsa-project/commit/7ae0fdc677bbb4f55379b8536f7e8ad30121f673) ([#16](https://github.com/meowditya/dsa-project/pull/16)). Its §0 states honestly what
+[`9b2bab6`](https://github.com/meowditya/cs253-on2-p09/commit/9b2bab65be34c50b45bac9bac46e5e6b0f18c648) ([#3](https://github.com/meowditya/cs253-on2-p09/pull/3)); the measurements it predicts were committed on
+19 Nov 2026, 22:23 IST, in [`7ae0fdc`](https://github.com/meowditya/cs253-on2-p09/commit/7ae0fdc677bbb4f55379b8536f7e8ad30121f673) ([#16](https://github.com/meowditya/cs253-on2-p09/pull/16)). Its §0 states honestly what
 was seen before it was written: Python pilot counts and Claude's smoke runs on a cloud VM (no number
 from them is in this report). The predictions, as written:
 

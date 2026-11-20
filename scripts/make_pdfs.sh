@@ -57,7 +57,9 @@ for k in 1 2 3 4 5 6; do
   src=$meta
   if [[ $k == 6 ]]; then        # the model, then this file's "Where it is used" section onwards
     src=$tmp/D6.md
-    { cat docs/MODEL_D6.md; echo; sed -n '/^## Where it is used/,$p' "$meta"; } > "$src"
+    # name and roll number under the model's title (page 1); docs/MODEL_D6.md itself stays unchanged
+    { awk -v a="$author" -v r="$roll" '{ print } !done && /^# / { print ""; print "**" a " · Roll no. " r "**"; done = 1 }' docs/MODEL_D6.md
+      echo; sed -n '/^## Where it is used/,$p' "$meta"; } > "$src"
   fi
   rm -f "$D/D$k.pdf" "$D"/D${k}_*.pdf
   pdf "$src" "$D/D${k}_$roll.pdf" "$author · Roll no. $roll"
