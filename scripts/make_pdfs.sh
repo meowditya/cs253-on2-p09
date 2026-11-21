@@ -40,7 +40,7 @@ printf '%s\n' '\usepackage{etoolbox}' '\AtBeginEnvironment{longtable}{\footnotes
 pdf() {  # pdf <markdown> <output.pdf> <author line> [resource path]
   widths "$1" "$tmp/w.md"
   pandoc -f markdown+lists_without_preceding_blankline "$tmp/w.md" -o "$2" --pdf-engine=xelatex -H "$tmp/head.tex" \
-    --columns=100 --resource-path="${4:-.}" -V geometry:margin=2cm -V fontsize=10pt \
+    --columns=100 --resource-path="${4:-.}" -V geometry:margin="${MARGIN:-2cm}" -V fontsize="${FONTSIZE:-10pt}" \
     -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V monofontoptions="Scale=0.82" \
     -V colorlinks=true -M author="$3" -M date="Team O(n²) · CS 253 / MA 253 · Project 9" 2> "$tmp/log" \
     || { cat "$tmp/log" >&2; exit 1; }
@@ -58,11 +58,16 @@ for k in 1 2 3 4 5 6; do
   if [[ $k == 6 ]]; then        # the model, then this file's "Where it is used" section onwards
     src=$tmp/D6.md
     # name and roll number under the model's title (page 1); docs/MODEL_D6.md itself stays unchanged
-    { awk -v a="$author" -v r="$roll" '{ print } !done && /^# / { print ""; print "**" a " · Roll no. " r "**"; done = 1 }' docs/MODEL_D6.md
+    st=$(grep -m1 '^\*\*Statement\*\*' "$meta")
+    { awk -v a="$author" -v r="$roll" -v st="$st" '{ print } !done && /^# / { print ""; print "**" a " · Roll no. " r "**"; print ""; print st; done = 1 }' docs/MODEL_D6.md
       echo; sed -n '/^## Where it is used/,$p' "$meta"; } > "$src"
   fi
   rm -f "$D/D$k.pdf" "$D"/D${k}_*.pdf
-  pdf "$src" "$D/D${k}_$roll.pdf" "$author · Roll no. $roll"
+  if [[ $k == 6 ]]; then   # the full model is long: smaller type keeps it within the 1–2 pages asked for
+    FONTSIZE=9pt MARGIN=1.5cm pdf "$src" "$D/D${k}_$roll.pdf" "$author · Roll no. $roll"
+  else
+    pdf "$src" "$D/D${k}_$roll.pdf" "$author · Roll no. $roll"
+  fi
   echo "D${k}_$roll.pdf  author: $author"
 done
 
