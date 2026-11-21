@@ -26,8 +26,7 @@ Appendix A Derivations
 
 The first draft of every module was generated with Claude in one session after INTERFACE.md was fixed
 (declared in TOOLS.md, with what each member changed and verified). Each owner reviewed their module,
-committed it from their own account through a pull request reviewed by another member, and answers for
-it in the viva.
+committed it from their own account through a pull request, and answers for it in the viva.
 
 - **Aditya Singh (Architect).** The shared interface `include/event_queue.h`, `include/rng.h`,
   `include/opstream.h`, `include/canonical.h`, `INTERFACE.md`, the `Makefile` and the interface contract
@@ -47,7 +46,7 @@ it in the viva.
 - **Sanchit Goyal (Adversary).** `adversary/gen.cpp`, `adversary/distributions.h` (Jones's Table I), the
   16 suites with expected outputs, `scripts/run_suites.sh`, `tests/cli_test.sh`, `tests/run_timeout.py`
   and D5 ([#8](https://github.com/meowditya/cs253-on2-p09/pull/8), [`f0885d4`](https://github.com/meowditya/cs253-on2-p09/commit/f0885d4)); owner's review ([#19](https://github.com/meowditya/cs253-on2-p09/pull/19)).
-- **Ram Upadhyay (Analyst).** The cost model `docs/MODEL_D6.md` = D6, committed before any measurement
+- **Ram Upadhyay (Analyst).** The cost model `docs/MODEL_D6.md` = D6, committed before the final measurements
   ([#3](https://github.com/meowditya/cs253-on2-p09/pull/3), [`9b2bab6`](https://github.com/meowditya/cs253-on2-p09/commit/9b2bab65be34c50b45bac9bac46e5e6b0f18c648)); the benchmark harness `bench/`,
   `results/plot.py`, `scripts/run_bench.sh`, `scripts/profile.sh`, `tests/plot_test.py`,
   `tests/profile_test.sh` ([#13](https://github.com/meowditya/cs253-on2-p09/pull/13), [`317f096`](https://github.com/meowditya/cs253-on2-p09/commit/317f096)); owner's review ([#20](https://github.com/meowditya/cs253-on2-p09/pull/20)).
@@ -335,7 +334,7 @@ a mutation test that fails if the safeguard is removed; those are deliberate mut
 
 **Ascending and zigzag (AVL).** Inserting increasing keys always extends the rightmost path, so the
 tree becomes right-heavy again and again; by D5 every insertion that does not raise the height of the
-whole tree must rotate, so all but about 1.45·log₂ n insertions rotate. Zigzag (1, N, 2, N−1, …) places
+whole tree must rotate, so all but about log₂ n insertions rotate (10 of 1000, 20 of 10⁶). Zigzag (1, N, 2, N−1, …) places
 each new key on the inside of a subtree, which is the double-rotation case.
 
 **Fibonacci tree + delete-min (AVL).** A Fibonacci tree is the sparsest AVL tree: every internal node
@@ -359,8 +358,8 @@ everything from a seed. All give identical results on the three queues.
 The model is `docs/MODEL_D6.md` (= D6). It was committed on 17 Nov 2026, 19:43 IST, in
 [`9b2bab6`](https://github.com/meowditya/cs253-on2-p09/commit/9b2bab65be34c50b45bac9bac46e5e6b0f18c648) ([#3](https://github.com/meowditya/cs253-on2-p09/pull/3)); the measurements it predicts were committed on
 19 Nov 2026, 22:23 IST, in [`7ae0fdc`](https://github.com/meowditya/cs253-on2-p09/commit/7ae0fdc677bbb4f55379b8536f7e8ad30121f673) ([#16](https://github.com/meowditya/cs253-on2-p09/pull/16)). Its §0 states honestly what
-was seen before it was written: Python pilot counts and Claude's smoke runs on a cloud VM (no number
-from them is in this report). The predictions, as written:
+was seen before it was written: Python pilot counts, Claude's smoke runs on a cloud VM and one complete
+benchmark run there while the draft was verified (all discarded; no number from them is in this report). The predictions, as written:
 
 | | Prediction |
 |---|---|

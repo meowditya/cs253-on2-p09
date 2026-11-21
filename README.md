@@ -221,8 +221,8 @@ point. Full tables, figures and the explanation of every refuted prediction: REP
 ## Known limitations
 
 - The checkpoint tags `c1`, `c2` and `c3` were not created at the checkpoints; we have not created
-  them afterwards. Each module arrived through one reviewed pull request (17–19 Nov) rather than in many
-  small commits.
+  them afterwards. Each module arrived through one pull request (17–19 Nov) rather than in many small
+  commits.
 - The profiler was unavailable on the benchmark machine (macOS), so the report makes no cache claims;
   its cache explanations are labelled as untested hypotheses.
 - All timings come from one machine and one benchmark run; a few points have a wide spread across seeds
@@ -242,6 +242,5 @@ prompts, is declared in **TOOLS.md**. References are listed in REPORT.md §13; t
 D. W. Jones, *An empirical comparison of priority-queue and event-set implementations*, CACM 29(4),
 1986 (the hold model) and G. M. Adelson-Velsky and E. M. Landis, 1962 (AVL trees).
 
-**How we worked.** Each module arrived through a pull request from its owner's account, reviewed by
-another member (branch protection was not enabled, so this was by agreement; a few TOOLS.md edits were
-committed directly to `main`). The submission is the commit tagged `final`.
+**How we worked.** Each module arrived through a pull request from its owner's account (branch
+protection was not enabled; a few TOOLS.md edits were committed directly to `main`). The submission is the commit tagged `final`.
