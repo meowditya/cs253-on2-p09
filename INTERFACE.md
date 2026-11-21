@@ -151,7 +151,7 @@ failed · 4 resource, time-overflow or sequence exhaustion.
 `oracle/`, `tests/{test_oracle,test_checkers_mutations,test_fullscale}.cpp`: Oracle owner.
 `adversary/`, `scripts/run_suites.sh`: Adversary.
 `bench/`, `results/`, `scripts/{run_bench,profile}.sh`, `docs/MODEL_D6.md`: Analyst.
-`docs/derivations/Dk.pdf`: the owner of derivation k.
+`docs/derivations/D<k>_<roll no>.pdf` (source `D<k>.md`): the owner of derivation k.
 
 ## 10. Experimental modes (not part of the contract)
 
